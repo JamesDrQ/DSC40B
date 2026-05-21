@@ -1,23 +1,13 @@
-def cluster(graph, weights, level):
-    visited = set()
-    clusters = []
+def biggest_descendent(graph, root, value):
+    biggest = {}
+    def dfs(node):
+        best = value[node]
 
-    for node in graph.nodes:
-        if node not in visited:
-            current_cluster = set()
-
-            stack = [node]
-            visited.add(node)
-
-            while stack:
-                curr = stack.pop()
-                current_cluster.add(curr)
-
-                for neighbor in graph.neighbors(curr):
-                    if neighbor not in visited and weights(curr, neighbor) >= level:
-                        visited.add(neighbor)
-                        stack.append(neighbor)
-
-            clusters.append(frozenset(current_cluster))
-
-    return frozenset(clusters)
+        for child in graph.neighbors(node):
+            child_best = dfs(child)
+            best = max(best, child_best)
+        
+        biggest[node] = best
+        return best
+    dfs(root)
+    return biggest
